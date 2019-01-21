@@ -49,12 +49,12 @@ where `ORDERCHANGE` is a javascript object with the following format:
     direction: 'buy' | 'sell',
     quantity: {
         currency: CURRENCYSTRING,
-        counterparty: CASINOCOINADDRESS,  (omitted if currency is 'XRP')
+        counterparty: CASINOCOINADDRESS,  (omitted if currency is 'CSC')
         value: DECIMALSTRING
     },
     totalPrice: {
         currency: CURRENCYSTRING,
-        counterparty: CASINOCOINADDRESS,  (omitted if currency is 'XRP')
+        counterparty: CASINOCOINADDRESS,  (omitted if currency is 'CSC')
         value: DECIMALSTRING
     },
     makerExchangeRate: DECIMALSTRING,
@@ -68,7 +68,7 @@ where `ORDERCHANGE` is a javascript object with the following format:
 The keys in this object are the Casinocoin [addresses] whose orders have changed and the values are arrays of objects that represent the order changes.
 
 The `SEQUENCE` is the sequence number of the transaction that created that create the orderbook change.
-The `CURRENCYSTRING` is 'XRP' for XRP, a 3-letter ISO currency code, or a 160-bit hex string in the [Currency format].
+The `CURRENCYSTRING` is 'CSC' for CSC, a 3-letter ISO currency code, or a 160-bit hex string in the [Currency format].
 
 The `makerExchangeRate` field provides the original value of the ratio of what the taker pays over what the taker gets (also known as the "quality").
 
@@ -92,8 +92,8 @@ The return value is a JavaScript object in the following format:
 {
     status: 'created' | 'modified' | 'deleted',
     channelId: HEX_STRING,
-    source: RIPPLE_ADDRESS,
-    destination: RIPPLE_ADDRESS,
+    source: CASINOCOINADDRESS,
+    destination: CASINOCOINADDRESS,
     channelAmountChangeDrops: INTEGER_STRING,
     channelBalanceChangeDrops: INTEGER_STRING,
     channelAmountDrops: INTEGER_STRING,
@@ -104,8 +104,8 @@ The return value is a JavaScript object in the following format:
 
 * `channelId` indicates the Channel ID, which is necessary to sign claims.
 * `source` owns this payment channel. This comes from the sending address of the transaction that created the channel.
-* `destination` is the only address that can receive XRP from the channel. This comes from the Destination field of the transaction that created the channel.
-* `channelAmountChangeDrops` is the change in the amount of XRP drops allocated to this channel. This is positive for a PaymentChannelFund transaction.
-* `channelBalanceChangeDrops` is the change in the amount of XRP drops already paid out by the channel.
-* `channelAmountDrops` is the amount of XRP drops that has been allocated to this channel. This includes XRP that has been paid to the destination address. This is initially set by the transaction that created the channel and can be increased if the source address sends a PaymentChannelFund transaction.
-* `channelBalanceDrops` is the total XRP, in drops, already paid out by the channel. The difference between this value and the Amount is how much XRP can still be paid tot he destination address with PaymentChannelClaim transactions. If the channel closes, the remaining difference is returned to the source address.
+* `destination` is the only address that can receive CSC from the channel. This comes from the Destination field of the transaction that created the channel.
+* `channelAmountChangeDrops` is the change in the amount of CSC drops allocated to this channel. This is positive for a PaymentChannelFund transaction.
+* `channelBalanceChangeDrops` is the change in the amount of CSC drops already paid out by the channel.
+* `channelAmountDrops` is the amount of CSC drops that has been allocated to this channel. This includes CSC that has been paid to the destination address. This is initially set by the transaction that created the channel and can be increased if the source address sends a PaymentChannelFund transaction.
+* `channelBalanceDrops` is the total CSC, in drops, already paid out by the channel. The difference between this value and the Amount is how much CSC can still be paid tot he destination address with PaymentChannelClaim transactions. If the channel closes, the remaining difference is returned to the source address.

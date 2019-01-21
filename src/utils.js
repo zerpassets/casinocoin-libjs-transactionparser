@@ -3,8 +3,8 @@ var _ = require('lodash');
 var BigNumber = require('bignumber.js');
 
 // drops is a bignumber.js BigNumber
-function dropsToXRP(drops) {
-  return drops.dividedBy(1000000);
+function dropsToCSC(drops) {
+  return drops.dividedBy(100000000.0);
 }
 
 function normalizeNode(affectedNode) {
@@ -27,14 +27,18 @@ function normalizeNodes(metadata) {
   return metadata.AffectedNodes.map(normalizeNode);
 }
 
+function removeUndefined(obj) {
+  return _.omit(obj, _.isUndefined);
+}
+
 function parseCurrencyAmount(currencyAmount) {
   if (currencyAmount === undefined) {
     return undefined;
   }
   if (typeof currencyAmount === 'string') {
     return {
-      currency: 'XRP',
-      value: dropsToXRP(new BigNumber(currencyAmount)).toString()
+      currency: 'CSC',
+      value: dropsToCSC(new BigNumber(currencyAmount)).toString()
     };
   }
 
@@ -73,8 +77,9 @@ function getAffectedAccounts(metadata) {
 
 
 module.exports = {
-  dropsToXRP: dropsToXRP,
+  dropsToCSC: dropsToCSC,
   normalizeNodes: normalizeNodes,
   parseCurrencyAmount: parseCurrencyAmount,
-  getAffectedAccounts: getAffectedAccounts
+  getAffectedAccounts: getAffectedAccounts,
+  removeUndefined: removeUndefined
 };

@@ -1,15 +1,12 @@
 'use strict';
 var _ = require('lodash');
 var utils = require('./utils');
+var removeUndefined = require('./utils').removeUndefined;
 var GlobalBigNumber = require('bignumber.js');
 var BigNumber = GlobalBigNumber.another({ DECIMAL_PLACES: 40 });
 var parseQuality = require('./quality');
 
 var lsfSell = 0x00020000; // see "lsfSell" flag in casinocoind source code
-
-function removeUndefined(obj) {
-    return _.omit(obj, _.isUndefined);
-}
 
 function convertOrderChange(order) {
     var takerGets = order.taker_gets;
@@ -43,8 +40,8 @@ function getExpirationTime(node) {
 function getQuality(node) {
     var takerGets = node.finalFields.TakerGets || node.newFields.TakerGets;
     var takerPays = node.finalFields.TakerPays || node.newFields.TakerPays;
-    var takerGetsCurrency = takerGets.currency || 'XRP';
-    var takerPaysCurrency = takerPays.currency || 'XRP';
+    var takerGetsCurrency = takerGets.currency || 'CSC';
+    var takerPaysCurrency = takerPays.currency || 'CSC';
     var bookDirectory = node.finalFields.BookDirectory ||
         node.newFields.BookDirectory;
     var qualityHex = bookDirectory.substring(bookDirectory.length - 16);

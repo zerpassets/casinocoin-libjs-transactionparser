@@ -1,6 +1,7 @@
 'use strict';
 
 const normalizeNodes = require('./utils').normalizeNodes;
+const removeUndefined = require('./utils').removeUndefined;
 const BigNumber = require('bignumber.js');
 
 function parsePaymentChannelStatus(node) {
@@ -23,7 +24,7 @@ function summarizePaymentChannel(node) {
   const final = (node.diffType === 'CreatedNode') ? node.newFields : node.finalFields;
   const prev = node.previousFields || {};
 
-  return {
+  return removeUndefined({
     // Status may be 'created', 'modified', or 'deleted'.
     status: parsePaymentChannelStatus(node),
 
@@ -36,31 +37,31 @@ function summarizePaymentChannel(node) {
 
     // The destination address for this payment channel.
     // While the payment channel is open, this address is the only one that can receive
-    // XRP from the channel. This comes from the Destination field of the transaction
+    // CSC from the channel. This comes from the Destination field of the transaction
     // that created the channel.
     destination: final.Destination,
 
-    // The change in the number of XRP drops allocated to this channel.
+    // The change in the number of CSC drops allocated to this channel.
     // This is positive if this is a PaymentChannelFund transaction.
     channelAmountChangeDrops: prev.Amount ?
       new BigNumber(final.Amount)
       .minus(new BigNumber(prev.Amount || 0))
       .toString(10) : undefined,
 
-    // The change in the number of XRP drops already paid out by the channel.
+    // The change in the number of CSC drops already paid out by the channel.
     channelBalanceChangeDrops: final.Balance ?
       new BigNumber(final.Balance)
       .minus(new BigNumber(prev.Balance || 0))
       .toString(10) : undefined,
 
-    // Total XRP, in drops, that has been allocated to this channel.
-    // This includes XRP that has been paid to the destination address.
+    // Total CSC, in drops, that has been allocated to this channel.
+    // This includes CSC that has been paid to the destination address.
     // This is initially set by the transaction that created the channel and
     // can be increased if the source address sends a PaymentChannelFund transaction.
     channelAmountDrops: new BigNumber(final.Amount || 0).toString(10),
 
-    // Total XRP, in drops, already paid out by the channel.
-    // The difference between this value and the Amount field is how much XRP can still
+    // Total CSC, in drops, already paid out by the channel.
+    // The difference between this value and the Amount field is how much CSC can still
     // be paid to the destination address with PaymentChannelClaim transactions.
     // If the channel closes, the remaining difference is returned to the source address.
     channelBalanceDrops: new BigNumber(final.Balance || 0).toString(10),
@@ -68,7 +69,7 @@ function summarizePaymentChannel(node) {
     // The identifying hash of the transaction that most recently modified this payment channel object.
     // You can use this to retrieve the object's history.
     previousTxnId: node.PreviousTxnID
-  };
+  });
 }
 
 function parseChannelChanges(metadata) {
